@@ -15,6 +15,10 @@ public class Display extends Canvas implements Runnable{
     InputHandler input;
     Resource resource;
 
+    // spawn point
+    int x = 120;
+    int y = 80;
+
     public Display(int width, int height){
         this.width = width;
         this.height = height;
@@ -58,8 +62,6 @@ public class Display extends Canvas implements Runnable{
         }
     }
 
-    double x = 80;
-    double y = 80;
 
     public void render(){
         BufferStrategy bs = this.getBufferStrategy();
@@ -68,10 +70,23 @@ public class Display extends Canvas implements Runnable{
             return;
         }
         Graphics g = bs.getDrawGraphics();
-        g.setColor(Color.BLUE);
+        g.setColor(Color.BLACK);
         g.fillRect(0,0,getWidth(),getHeight());
         g.drawImage(resource.loadImage("res/level.png"), 0, 0, resource.getWidth(), resource.getHeight(), null);
-        g.fillRect((int) x, (int) y, 32, 32);
+        g.fillRect(x, y, 32, 32);
+        g.setFont(new Font("Verdana", 0, 50));
+        if(resource.getColour(x, y) == 0xFF7F27){
+            int xx = x;
+            int yy = y;
+            if(xx < 20) xx = 20;
+            if(xx > 405) xx = 405;
+            if(yy < 45) yy = 45;
+            if(yy > 350) yy = 350;
+            g.drawString("Collision!", xx, yy);
+        }
+        if(resource.getColour(x, y) == 0x3F48CC){
+            g.drawString("Blue!", 250, 150);
+        }
         g.dispose();
         bs.show();
     }
