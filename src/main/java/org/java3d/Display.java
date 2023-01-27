@@ -2,6 +2,7 @@ package org.java3d;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 public class Display extends Canvas implements Runnable{
@@ -11,6 +12,9 @@ public class Display extends Canvas implements Runnable{
     private Thread thread;
     private boolean running = false;
 
+    InputHandler input;
+    Resource resource;
+
     public Display(int width, int height){
         this.width = width;
         this.height = height;
@@ -19,6 +23,10 @@ public class Display extends Canvas implements Runnable{
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
+
+        resource = new Resource();
+        input = new InputHandler();
+        addKeyListener(input);
     }
 
     public synchronized void start(){
@@ -36,8 +44,22 @@ public class Display extends Canvas implements Runnable{
     }
 
     public void update(){
-
+        if(input.keys[KeyEvent.VK_UP]){
+            y--;
+        }
+        if(input.keys[KeyEvent.VK_DOWN]){
+            y++;
+        }
+        if(input.keys[KeyEvent.VK_RIGHT]){
+            x++;
+        }
+        if(input.keys[KeyEvent.VK_LEFT]){
+            x--;
+        }
     }
+
+    double x = 80;
+    double y = 80;
 
     public void render(){
         BufferStrategy bs = this.getBufferStrategy();
@@ -48,6 +70,8 @@ public class Display extends Canvas implements Runnable{
         Graphics g = bs.getDrawGraphics();
         g.setColor(Color.BLUE);
         g.fillRect(0,0,getWidth(),getHeight());
+        g.drawImage(resource.loadImage("res/level.png"), 0, 0, resource.getWidth(), resource.getHeight(), null);
+        g.fillRect((int) x, (int) y, 32, 32);
         g.dispose();
         bs.show();
     }
